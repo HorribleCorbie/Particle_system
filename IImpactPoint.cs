@@ -13,7 +13,7 @@ namespace Particle_system
 
         public abstract void ImpactParticle(Particle particle);
 
-        public void Render(Graphics g)
+        public virtual void Render(Graphics g)
         {
             g.FillEllipse(
                     new SolidBrush(Color.Red),

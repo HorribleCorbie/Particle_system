@@ -34,7 +34,7 @@ namespace Particle_system
 
         public virtual void Draw(Graphics g)
         {
-            float k = Math.Min(1f, Life / 100);
+            float k = Math.Min(1f, Life / 100f);
             int alpha = (int)(k * 255);
 
             var color = Color.FromArgb(alpha, Color.Black);
@@ -52,6 +52,7 @@ namespace Particle_system
 
             public static Color MixColor(Color color1, Color color2, float k)
             {
+                k = Math.Clamp(k, 0f, 1f);
                 return Color.FromArgb(
                     (int)(color2.A * k + color1.A * (1 - k)),
                     (int)(color2.R * k + color1.R * (1 - k)),
@@ -64,7 +65,7 @@ namespace Particle_system
             {
                 float k = Math.Min(1f, Life / 100);
 
-                var color = MixColor(ToColor, FromColor, k);
+                var color = MixColor(FromColor, ToColor, k);
                 var b = new SolidBrush(color);
 
                 g.FillEllipse(b, X - Radius, Y - Radius, Radius * 2, Radius * 2);

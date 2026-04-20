@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Numerics;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
 
 namespace Particle_system
 {
-    public  class Particle
+    public class Particle
     {
         public float Life;
 
         public int Radius;
-        public float X; 
-        public float Y; 
+        public float X;
+        public float Y;
 
         public float SpeedX;
         public float SpeedY;
@@ -29,8 +32,9 @@ namespace Particle_system
             SpeedY = -(float)(Math.Sin(direction / 180 * Math.PI) * speed);
 
             Radius = 2 + rand.Next(10);
-            Life = 20 + rand.Next(100);
+            Life = 100 + rand.Next(100);
         }
+
 
         public virtual void Draw(Graphics g)
         {
@@ -72,6 +76,24 @@ namespace Particle_system
 
                 b.Dispose();
             }
+        }
+        public Matrix GetTransform()
+        {
+            var matrix = new Matrix();
+            matrix.Translate(X, Y);
+            return matrix;
+        }
+
+        public virtual bool Overlaps(Particle other)
+        {
+            float dx = X - other.X;
+            float dy = Y - other.Y;
+
+            float dist2 = dx * dx + dy * dy;
+
+            float r = Radius + other.Radius;
+
+            return dist2 <= r * r;
         }
     }
 }

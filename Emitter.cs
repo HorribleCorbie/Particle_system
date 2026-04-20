@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using static Particle_system.Particle;
@@ -18,15 +19,14 @@ namespace Particle_system
         public int RadiusMin = 2;
         public int RadiusMax = 10; 
         public int LifeMin = 20; 
-        public int LifeMax = 100; 
-
+        public int LifeMax = 100;
 
         public int ParticlesPerTick = 1;
         public Color ColorFrom = Color.White;
-        public Color ColorTo = Color.FromArgb(0, Color.Black); 
+        public Color ColorTo = Color.FromArgb(0, Color.Black);
 
 
-        List<Particle> particles = new List<Particle>();
+        public List<Particle> particles = new List<Particle>();
         public List<IImpactPoint> impactPoints = new List<IImpactPoint>();
 
         public int MousePositionX;
@@ -35,7 +35,7 @@ namespace Particle_system
         public float GravitationX = 0;
         public float GravitationY = 1;
 
-        public int ParticlesCount = 500;
+        public int ParticlesCount =10;
 
         public virtual Particle CreateParticle()
         {
@@ -46,7 +46,7 @@ namespace Particle_system
             return particle;
         }
 
-        public void UpdateState()
+        public virtual void UpdateState()
         {
             int particlesToCreate = ParticlesPerTick;
             foreach (var particle in particles)
@@ -116,5 +116,7 @@ namespace Particle_system
 
             particle.Radius = Particle.rand.Next(RadiusMin, RadiusMax);
         }
+
+        
     }
 }

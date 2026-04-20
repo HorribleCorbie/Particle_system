@@ -23,24 +23,32 @@ namespace Particle_system
 
             int particlesToCreate = ParticlesPerTick;
 
-            foreach (var particle in particles)
+            foreach (var particle in particles.ToList())
             {
                 particle.X += particle.SpeedX;
                 particle.Y += particle.SpeedY;
 
                 if (particle.Y > Height)
                 {
+                    if (particles.Count > ParticlesCount)
+                    {
+                        particles.Remove(particle);
+                    }
                     ResetParticle(particle);
                     continue;
                 }
 
-                foreach (var point in impactPoints)
+                foreach (var point in impactPoints.ToList())
                 {
                     point.ImpactParticle(particle);
                 }
 
                 if (particle.Life <= 0)
                 {
+                    if (particles.Count > ParticlesCount)
+                    {
+                        particles.Remove(particle);
+                    }
                     ResetParticle(particle);
                     continue;
                 }
@@ -70,6 +78,8 @@ namespace Particle_system
                 ResetParticle(particle);
                 particles.Add(particle);
             }
+           
+
         }
         public override void ResetParticle(Particle particle)
         {

@@ -32,11 +32,12 @@
             picDisplay = new PictureBox();
             timer1 = new System.Windows.Forms.Timer(components);
             tbDirection = new TrackBar();
-            lblDirection = new Label();
             points = new Label();
             btnTower = new Button();
             btnHP = new Button();
             btnSpeed = new Button();
+            btnRestart = new Button();
+            lblDirection = new Label();
             ((System.ComponentModel.ISupportInitialize)picDisplay).BeginInit();
             ((System.ComponentModel.ISupportInitialize)tbDirection).BeginInit();
             SuspendLayout();
@@ -60,19 +61,13 @@
             // tbDirection
             // 
             tbDirection.Location = new Point(12, 548);
-            tbDirection.Maximum = 359;
+            tbDirection.Maximum = 25;
+            tbDirection.Minimum = 10;
             tbDirection.Name = "tbDirection";
             tbDirection.Size = new Size(155, 45);
             tbDirection.TabIndex = 1;
+            tbDirection.Value = 10;
             tbDirection.Scroll += tbDirection_Scroll;
-            // 
-            // lblDirection
-            // 
-            lblDirection.AutoSize = true;
-            lblDirection.Location = new Point(173, 560);
-            lblDirection.Name = "lblDirection";
-            lblDirection.Size = new Size(0, 15);
-            lblDirection.TabIndex = 2;
             // 
             // points
             // 
@@ -88,7 +83,7 @@
             btnTower.Name = "btnTower";
             btnTower.Size = new Size(93, 23);
             btnTower.TabIndex = 6;
-            btnTower.Text = "Башня = 50";
+            btnTower.Text = "Башня = 25";
             btnTower.UseVisualStyleBackColor = true;
             btnTower.Click += btnTower_Click;
             // 
@@ -109,15 +104,35 @@
             btnSpeed.Name = "btnSpeed";
             btnSpeed.Size = new Size(115, 23);
             btnSpeed.TabIndex = 8;
-            btnSpeed.Text = "Ускорение +1 (50)";
+            btnSpeed.Text = "Ускорение +1 (25)";
             btnSpeed.UseVisualStyleBackColor = true;
             btnSpeed.Click += btnSpeed_Click;
+            // 
+            // btnRestart
+            // 
+            btnRestart.Location = new Point(569, 556);
+            btnRestart.Name = "btnRestart";
+            btnRestart.Size = new Size(75, 23);
+            btnRestart.TabIndex = 9;
+            btnRestart.Text = "Заново";
+            btnRestart.UseVisualStyleBackColor = true;
+            btnRestart.Click += btnRestart_Click;
+            // 
+            // lblDirection
+            // 
+            lblDirection.AutoSize = true;
+            lblDirection.Location = new Point(173, 560);
+            lblDirection.Name = "lblDirection";
+            lblDirection.Size = new Size(19, 15);
+            lblDirection.TabIndex = 2;
+            lblDirection.Text = "10";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(834, 597);
+            Controls.Add(btnRestart);
             Controls.Add(btnSpeed);
             Controls.Add(btnHP);
             Controls.Add(btnTower);
@@ -138,10 +153,11 @@
         private PictureBox picDisplay;
         private System.Windows.Forms.Timer timer1;
         private TrackBar tbDirection;
-        private Label lblDirection;
         private Label points;
         private Button btnTower;
         private Button btnHP;
         private Button btnSpeed;
+        private Button btnRestart;
+        private Label lblDirection;
     }
 }

@@ -9,6 +9,7 @@ namespace Particle_system
     internal class Player : IImpactPoint
     {
         public Action<Particle> isOverlaps;
+        public Action<Player> GameOver;
         public int Health = 1000;
         public float X;
         public float Y;
@@ -62,6 +63,10 @@ namespace Particle_system
             {
                 Health -= 1;
                 particle.Life = 0;
+                if (Health <= 0)
+                {
+                    GameOver(this);
+                }
             }
         }
 

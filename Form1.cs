@@ -12,6 +12,7 @@ namespace Particle_system
         TopEmitter top;
         Bullet particle;
         int Points = 0;
+        bool isGameOver = false;
         int TowerX;
         List<Bullet> bullets = new List<Bullet>();
         List<Tower> towers = new List<Tower>();
@@ -25,23 +26,63 @@ namespace Particle_system
             picDisplay.BackgroundImage = Image.FromFile("background.jpg");
             picDisplay.BackgroundImageLayout = ImageLayout.Stretch;
             TowerX = picDisplay.Width - 100;
+
             player = new Player
             {
                 X = picDisplay.Width / 2,
                 Y = picDisplay.Height - 100,
             };
+
+            player.GameOver += (p) =>
+            {
+                isGameOver = true;
+
+            };
+
             top = new TopEmitter
             {
                 Width = picDisplay.Width,
                 Height = picDisplay.Height,
                 GravitationY = 0.25f
             };
+
             emitters.Add(this.top);
             top.impactPoints.Add(player);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (isGameOver)
+            {
+                timer1.Stop();
+                using (var g = Graphics.FromImage(picDisplay.Image))
+                {
+                    g.Clear(Color.Black);
+
+                    var stringFormat = new StringFormat
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    };
+
+                    var font = new Font("Verdana", 60);
+
+                    g.DrawString(
+                        "GAME OVER",
+                        font,
+                        Brushes.White,
+                        picDisplay.Width / 2,
+                        picDisplay.Height / 2,
+                        stringFormat
+                    );
+                }
+                btnTower.Enabled = false;
+                btnSpeed.Enabled = false;
+                btnHP.Enabled = false;
+                picDisplay.Invalidate();
+                picDisplay.Refresh();
+                return;
+            }
             foreach (var emitter in emitters)
             {
                 emitter.UpdateState();
@@ -89,26 +130,12 @@ namespace Particle_system
                 emitter.MousePositionY = e.Y;
             }
 
-            //point1.X = e.X;
-            //point1.Y = e.Y;
         }
-
 
         private void tbDirection_Scroll(object sender, EventArgs e)
         {
             top.ParticlesCount = tbDirection.Value;
             lblDirection.Text = $"{tbDirection.Value}";
-        }
-
-
-        private void tbGravition_Scroll(object sender, EventArgs e)
-        {
-            //point1.Power = tbGraviton.Value;
-        }
-
-        private void tbGraviton2_Scroll(object sender, EventArgs e)
-        {
-            //point2.Power = tbGraviton2.Value;
         }
 
         private void picDisplay_MouseClick(object sender, MouseEventArgs e)
@@ -133,7 +160,6 @@ namespace Particle_system
                 dx /= length;
                 dy /= length;
             }
-
 
             particle.SpeedX = dx * speed;
             particle.SpeedY = dy * speed;
@@ -164,7 +190,7 @@ namespace Particle_system
 
         private void btnTower_Click(object sender, EventArgs e)
         {
-            if (Points >= 2 && towers.Count < 4)
+            if (Points >= 25 && towers.Count < 4)
             {
                 Tower tower = new Tower
                 {
@@ -173,7 +199,7 @@ namespace Particle_system
                 };
                 TowerX -= picDisplay.Width / 4;
                 towers.Add(tower);
-                Points -= 2;
+                Points -= 25;
                 points.Text = $"Счет: {Points}";
 
                 CreateBullete(tower.X, -picDisplay.Height, tower.X, tower.Y, SpeedBullets, false);
@@ -181,7 +207,7 @@ namespace Particle_system
                 {
                     btnTower.Text = "Заполнено";
                     btnTower.Enabled = false;
-                    btnSpeed.Enabled= true;
+                    btnSpeed.Enabled = true;
                 }
             }
         }
@@ -202,14 +228,26 @@ namespace Particle_system
 
         private void btnSpeed_Click(object sender, EventArgs e)
         {
-            if (Points >= 2) {
-                Points -= 2;
+            if (Points >= 25)
+            {
+                Points -= 25;
                 points.Text = $"Счет: {Points}";
                 foreach (var tower in towers)
                 {
-                    SpeedBullets +=1f;
+                    SpeedBullets += 1f;
                 }
             }
+            if (SpeedBullets >= 10f)
+            {
+                btnSpeed.Text = "Заполнено";
+                btnSpeed.Enabled = false;
+            }
         }
+
+        private void btnRestart_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
+
     }
 }

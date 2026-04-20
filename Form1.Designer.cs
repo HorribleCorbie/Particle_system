@@ -35,7 +35,7 @@
             lblDirection = new Label();
             points = new Label();
             btnTower = new Button();
-            button1 = new Button();
+            btnHP = new Button();
             ((System.ComponentModel.ISupportInitialize)picDisplay).BeginInit();
             ((System.ComponentModel.ISupportInitialize)tbDirection).BeginInit();
             SuspendLayout();
@@ -91,21 +91,22 @@
             btnTower.UseVisualStyleBackColor = true;
             btnTower.Click += btnTower_Click;
             // 
-            // button1
+            // btnHP
             // 
-            button1.Location = new Point(353, 556);
-            button1.Name = "button1";
-            button1.Size = new Size(89, 23);
-            button1.TabIndex = 7;
-            button1.Text = "+100 HP (50)";
-            button1.UseVisualStyleBackColor = true;
+            btnHP.Location = new Point(353, 556);
+            btnHP.Name = "btnHP";
+            btnHP.Size = new Size(89, 23);
+            btnHP.TabIndex = 7;
+            btnHP.Text = "+50 HP (25)";
+            btnHP.UseVisualStyleBackColor = true;
+            btnHP.Click += btnHP_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(834, 597);
-            Controls.Add(button1);
+            Controls.Add(btnHP);
             Controls.Add(btnTower);
             Controls.Add(points);
             Controls.Add(lblDirection);
@@ -127,6 +128,6 @@
         private Label lblDirection;
         private Label points;
         private Button btnTower;
-        private Button button1;
+        private Button btnHP;
     }
 }

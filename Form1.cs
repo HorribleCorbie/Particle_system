@@ -12,7 +12,9 @@ namespace Particle_system
         TopEmitter top;
         Bullet particle;
         int Points = 0;
+        int TowerX;
         List<Bullet> bullets = new List<Bullet>();
+        List<Tower> towers = new List<Tower>();
 
         public Form1()
         {
@@ -20,7 +22,7 @@ namespace Particle_system
             picDisplay.Image = new Bitmap(picDisplay.Width, picDisplay.Height);
             picDisplay.BackgroundImage = Image.FromFile("background.jpg");
             picDisplay.BackgroundImageLayout = ImageLayout.Stretch;
-
+            TowerX = picDisplay.Width - 100;
             //this.emitter = new Emitter
             //{
             //    Direction = 0,
@@ -73,11 +75,19 @@ namespace Particle_system
                     player.Render(g);
                     emitter.Render(g);
                 }
+                foreach (var tower in towers)
+                {
+                    tower.Render(g);
+                }
                 foreach (var bullet in bullets.ToList())
                 {
                     bullet.Draw(g);
                     bullet.X += bullet.SpeedX;
                     bullet.Y += bullet.SpeedY;
+                    if (bullet.Y <= -picDisplay.Height)
+                    {
+                        bullet.isLose(bullet);
+                    }
                     foreach (var p in top.particles.ToList())
                     {
                         if (p.Overlaps(bullet))
@@ -122,6 +132,7 @@ namespace Particle_system
 
         private void picDisplay_MouseClick(object sender, MouseEventArgs e)
         {
+            
             particle = new Bullet();
             var X = e.X;
             var Y = e.Y;
@@ -150,14 +161,87 @@ namespace Particle_system
                 b.Life = 0;
                 bullets.Remove(b);
             };
+            particle.isLose += (b) =>
+            {
+                b.Life = 0;
+                bullets.Remove(b);
+            };
             bullets.Add(particle);
+        }
+
+        private void CreateBullete(Tower tower)
+        {
+                particle = new Bullet();
+                particle.X = tower.X;
+                particle.Y = tower.Y;
+                var X = tower.X;
+                var Y = -picDisplay.Height;
+                float dx = X - particle.X;
+                float dy = Y - particle.Y;
+
+                float length = MathF.Sqrt(dx * dx + dy * dy);
+
+                if (length > 0)
+                {
+                    dx /= length;
+                    dy /= length;
+                }
+
+                float speed = 5f;
+
+                particle.SpeedX = dx * speed;
+                particle.SpeedY = dy * speed;
+
+                particle.isOverlaps += (p, b) =>
+                {
+                    p.Life = 0;
+                    b.Life = 0;
+                    bullets.Remove(b);
+                    CreateBullete(tower);
+                };
+                particle.isLose += (b) =>
+                {
+                    b.Life = 0;
+                    bullets.Remove(b);
+                    CreateBullete(tower);
+                };
+
+                bullets.Add(particle);
         }
 
         private void btnTower_Click(object sender, EventArgs e)
         {
-            if (Points == 50)
+            if (Points >= 2 && towers.Count < 4)
             {
+                Tower tower = new Tower
+                {
+                    X = TowerX,
+                    Y = picDisplay.Height - 50
+                };
+                TowerX -= picDisplay.Width / 4;
+                towers.Add(tower);
+                Points -= 2;
+                points.Text = $"Счет: {Points}";
+                CreateBullete(tower);
+                if (towers.Count == 4)
+                {
+                    btnTower.Text = "Заполнено";
+                    btnTower.Enabled = false;
+                }
+            }
+        }
 
+        private void btnHP_Click(object sender, EventArgs e)
+        {
+            if (Points >= 25 && player.Health<1000)
+            {
+                int HP = 1000 - player.Health;
+                if (HP<50)
+                    player.Health += HP;
+                else
+                    player.Health += 50;
+                Points -= 25;
+                points.Text = $"Счет: {Points}";
             }
         }
     }

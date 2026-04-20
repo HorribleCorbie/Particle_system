@@ -10,6 +10,7 @@ namespace Particle_system
     internal class Bullet : Particle
     {
         public Action<Particle, Bullet> isOverlaps;
+        public Action< Bullet> isLose;
         public Bullet()
         {
             var direction = (double)rand.Next(360);

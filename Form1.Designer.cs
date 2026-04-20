@@ -36,6 +36,7 @@
             points = new Label();
             btnTower = new Button();
             btnHP = new Button();
+            btnSpeed = new Button();
             ((System.ComponentModel.ISupportInitialize)picDisplay).BeginInit();
             ((System.ComponentModel.ISupportInitialize)tbDirection).BeginInit();
             SuspendLayout();
@@ -101,11 +102,23 @@
             btnHP.UseVisualStyleBackColor = true;
             btnHP.Click += btnHP_Click;
             // 
+            // btnSpeed
+            // 
+            btnSpeed.Enabled = false;
+            btnSpeed.Location = new Point(448, 556);
+            btnSpeed.Name = "btnSpeed";
+            btnSpeed.Size = new Size(115, 23);
+            btnSpeed.TabIndex = 8;
+            btnSpeed.Text = "Ускорение +1 (50)";
+            btnSpeed.UseVisualStyleBackColor = true;
+            btnSpeed.Click += btnSpeed_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(834, 597);
+            Controls.Add(btnSpeed);
             Controls.Add(btnHP);
             Controls.Add(btnTower);
             Controls.Add(points);
@@ -129,5 +142,6 @@
         private Label points;
         private Button btnTower;
         private Button btnHP;
+        private Button btnSpeed;
     }
 }

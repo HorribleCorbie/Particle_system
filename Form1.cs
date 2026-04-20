@@ -169,13 +169,12 @@ namespace Particle_system
                 p.Life = 0;
                 b.Life = 0;
                 bullets.Remove(b);
-                if (isMainTower)
+                ++Points;
+                points.Text = $"—чет: {Points}";
+                if (!isMainTower)
                 {
-                    ++Points;
-                    points.Text = $"—чет: {Points}";
-                }
-                else
                     CreateBullete(X, Y, Start_X, Start_Y, SpeedBullets, false);
+                }
             };
             particle.isLose += (b) =>
             {

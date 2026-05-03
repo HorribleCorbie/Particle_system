@@ -15,6 +15,7 @@ namespace Particle_system
         int TowerX;
         List<Bullet> bullets = new List<Bullet>();
         List<Tower> towers = new List<Tower>();
+        MouseParticle mouseArea = new MouseParticle();
 
         int PriceDefense = 15;
         int TowerDefense = 0;
@@ -51,6 +52,12 @@ namespace Particle_system
                 Width = picDisplay.Width,
                 Height = picDisplay.Height,
                 GravitationY = 0.25f
+            };
+
+            mouseArea.timerIsOver += (m) =>
+            {
+                mouseArea.color = Color.Green;
+                mouseArea.isReady = true;
             };
 
             emitters.Add(this.top);
@@ -92,6 +99,12 @@ namespace Particle_system
                 return;
             }
 
+            mouseArea.timer--;
+            if (mouseArea.timer <= 0)
+            {
+                mouseArea.timerIsOver(mouseArea);
+            }
+
             foreach (var emitter in emitters)
             {
                 emitter.UpdateState();
@@ -100,6 +113,7 @@ namespace Particle_system
             using (var g = Graphics.FromImage(picDisplay.Image))
             {
                 g.Clear(Color.Transparent);
+                mouseArea.Draw(g);
 
                 foreach (var emitter in emitters)
                 {
@@ -133,12 +147,8 @@ namespace Particle_system
 
         private void picDisplay_MouseMove(object sender, MouseEventArgs e)
         {
-            foreach (var emitter in emitters)
-            {
-                emitter.MousePositionX = e.X;
-                emitter.MousePositionY = e.Y;
-            }
-
+            mouseArea.X = e.X;
+            mouseArea.Y = e.Y;
         }
 
         private void tbDirection_Scroll(object sender, EventArgs e)
@@ -149,13 +159,29 @@ namespace Particle_system
 
         private void picDisplay_MouseClick(object sender, MouseEventArgs e)
         {
-            
-            CreateBullete(e.X, e.Y, player.X, player.Y, 7f, true);
+            if (e.Button == MouseButtons.Left)
+            {
+                CreateBullete(e.X, e.Y, player.X, player.Y, 7f, true);
+            }
+            else if (e.Button == MouseButtons.Right && mouseArea.isReady)
+            {
+                int bulletCount = 10;
+                float radius = 100f;
+
+                for (int i = 0; i < bulletCount; i++)
+                {
+                    double angle = i * (Math.PI * 2 / bulletCount);
+
+                    float targetX = e.X + (float)(Math.Cos(angle) * radius);
+                    float targetY = e.Y + (float)(Math.Sin(angle) * radius);
+
+                    CreateBullete(targetX, targetY, e.X, e.Y, 7f, true, true);
+                }
+                mouseArea.ResetParticle();
+            }
         }
 
-
-
-        private void CreateBullete(float endX, float endY, float startX, float startY, float speed, bool isMainTower)
+        private void CreateBullete(float endX, float endY, float startX, float startY, float speed, bool isMainTower, bool isRightClickMouse = false)
         {
             Bullet bullet = new Bullet();
             bullet.X = startX;
@@ -176,14 +202,14 @@ namespace Particle_system
 
             bullet.isOverlaps += (p, b) =>
             {
-                p.Life --;
-                b.Life --;
+                p.Life--;
+                b.Life--;
 
                 bullets.Remove(b);
                 ++Points;
                 points.Text = $"Счет: {Points}";
 
-                if (!isMainTower)
+                if (!isMainTower && !isRightClickMouse)
                 {
                     CreateBullete(endX, endY, startX, startY, SpeedBullets, false);
                 }
@@ -191,9 +217,9 @@ namespace Particle_system
             };
             bullet.isLose += (b) =>
             {
-                b.Life --;
+                b.Life--;
                 bullets.Remove(b);
-                if (!isMainTower)
+                if (!isMainTower && !isRightClickMouse)
                     CreateBullete(endX, endY, startX, startY, SpeedBullets, false);
             };
 
@@ -279,6 +305,7 @@ namespace Particle_system
             points.Text = $"Счет: {Points}";
             btnTower.Text = "Башня = 25";
             btnSpeed.Text = "Ускорение = 25";
+            mouseArea.ResetParticle();
 
             picDisplay.BackgroundImage = Image.FromFile("background.jpg");
             picDisplay.BackgroundImageLayout = ImageLayout.Stretch;
@@ -315,7 +342,7 @@ namespace Particle_system
                 var LastDefense = bullets.FindLast(b => b is TowerDefense);
                 if (LastDefense is TowerDefense d)
                 {
-                    nextAngle = d.Angle+ angleStep;
+                    nextAngle = d.Angle + angleStep;
 
                 }
 
@@ -349,5 +376,6 @@ namespace Particle_system
                 }
             }
         }
+
     }
 }

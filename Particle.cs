@@ -12,7 +12,7 @@ namespace Particle_system
 {
     public class Particle
     {
-        public float Life;
+        public int Life;
 
         public int Radius;
         public float X;

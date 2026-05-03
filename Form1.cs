@@ -16,7 +16,7 @@ namespace Particle_system
         List<Bullet> bullets = new List<Bullet>();
         List<Tower> towers = new List<Tower>();
 
-        int PriceDefense = 25;
+        int PriceDefense = 15;
         int TowerDefense = 0;
         private float nextAngle = 0f;
         private float angleStep = 0.48f;
@@ -91,6 +91,7 @@ namespace Particle_system
                 picDisplay.Refresh();
                 return;
             }
+
             foreach (var emitter in emitters)
             {
                 emitter.UpdateState();
@@ -148,6 +149,7 @@ namespace Particle_system
 
         private void picDisplay_MouseClick(object sender, MouseEventArgs e)
         {
+            
             CreateBullete(e.X, e.Y, player.X, player.Y, 7f, true);
         }
 
@@ -174,8 +176,8 @@ namespace Particle_system
 
             bullet.isOverlaps += (p, b) =>
             {
-                p.Life = 0;
-                b.Life = 0;
+                p.Life --;
+                b.Life --;
 
                 bullets.Remove(b);
                 ++Points;
@@ -189,7 +191,7 @@ namespace Particle_system
             };
             bullet.isLose += (b) =>
             {
-                b.Life = 0;
+                b.Life --;
                 bullets.Remove(b);
                 if (!isMainTower)
                     CreateBullete(endX, endY, startX, startY, SpeedBullets, false);

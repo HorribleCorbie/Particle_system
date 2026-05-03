@@ -19,8 +19,7 @@ namespace Particle_system
         }
         public override void UpdateState()
         {
-            var target = impactPoints.FirstOrDefault() as Player;
-
+           
             int particlesToCreate = ParticlesPerTick;
 
             foreach (var particle in particles.ToList())
@@ -53,23 +52,7 @@ namespace Particle_system
                     continue;
                 }
 
-               
-
-                float dx = target.X - particle.X;
-                float dy = target.Y - particle.Y;
-
-                float length = MathF.Sqrt(dx * dx + dy * dy);
-
-                if (length > 0)
-                {
-                    dx /= length;
-                    dy /= length;
-                }
-
-                float speed = 4f; 
-
-                particle.SpeedX = dx * speed;
-                particle.SpeedY = dy * speed;
+                MovementParticle(particle);
             }
 
             while (particles.Count < ParticlesCount && particlesToCreate-- > 0)
@@ -81,12 +64,10 @@ namespace Particle_system
            
 
         }
-        public override void ResetParticle(Particle particle)
+        
+        public void MovementParticle(Particle particle)
         {
             var target = impactPoints.FirstOrDefault() as Player;
-
-            particle.X = Particle.rand.Next(Width);
-            particle.Y = -10;
 
             float dx = target.X - particle.X;
             float dy = target.Y - particle.Y;
@@ -98,13 +79,22 @@ namespace Particle_system
                 dx /= length;
                 dy /= length;
             }
-
-            float speed = 4f; 
+            var monster = particle as EvilParticle;
+            float speed = monster.speed;
 
             particle.SpeedX = dx * speed;
             particle.SpeedY = dy * speed;
+        }
 
-            particle.Life = 1;
+        public override void ResetParticle(Particle particle)
+        {
+
+            particle.X = Particle.rand.Next(Width);
+            particle.Y = -10;
+
+            MovementParticle(particle);
+            
+            particle.Life = (particle as EvilParticle).DefaultHP;
         }
     }
 }

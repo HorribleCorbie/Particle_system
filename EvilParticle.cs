@@ -13,26 +13,39 @@ namespace Particle_system
     {
         enum EnemyType { Monster, Skeleton, Zombie}
         public Image Img;
+        public float speed = 3.5f;
+        public int DefaultHP;
+        public int type = (int)rand.Next(3);
+
         public EvilParticle()
         {
             var direction = (double)rand.Next(360);
-            var speed = 1;
-
-            SpeedX = (float)(Math.Cos(direction / 180 * Math.PI) * speed);
-            SpeedY = -(float)(Math.Sin(direction / 180 * Math.PI) * speed);
+            string str;
 
             Radius = 20 + rand.Next(10);
             Life = 1;
-            EnemyType type = (EnemyType)rand.Next(3);
-            string str = type.ToString() switch
+            switch (type)
             {
-                "Monster" => "monster.png",
-                "Skeleton" => "skeleton.png",
-                "Zombie" => "zombie.png",
-                _ => "monster.png"
-            };
+                case 0:
+                    str = "monster.png";
+                    speed = 3f;
+                    Life = 2;
+                    break;
+                case 1:
+                    str = "skeleton.png";
+                    break;
+                case 2:
+                    str = "zombie.png";
+                    speed = 5f;
+                    break;
+                default:
+                    str = "skeleton.png";
+                    break;
+            }
+            DefaultHP = Life;
             Img = Image.FromFile(str);
         }
+
         public override void Draw(Graphics g)
         {
          

@@ -7,10 +7,7 @@ namespace Particle_system
     {
         List<Emitter> emitters = new List<Emitter>();
         Player player;
-        Emitter emitter;
-        GravityPoint point1;
         TopEmitter top;
-        Bullet particle;
         int Points = 0;
         bool isGameOver = false;
         int TowerX;
@@ -23,9 +20,10 @@ namespace Particle_system
         {
             InitializeComponent();
             picDisplay.Image = new Bitmap(picDisplay.Width, picDisplay.Height);
+            
             picDisplay.BackgroundImage = Image.FromFile("background.jpg");
             picDisplay.BackgroundImageLayout = ImageLayout.Stretch;
-            TowerX = picDisplay.Width - 100;
+            TowerX = picDisplay.Width - picDisplay.Width / 8;
 
             player = new Player
             {
@@ -147,11 +145,11 @@ namespace Particle_system
 
         private void CreateBullete(float X, float Y, float Start_X, float Start_Y, float speed, bool isMainTower)
         {
-            particle = new Bullet();
-            particle.X = Start_X;
-            particle.Y = Start_Y;
-            float dx = X - particle.X;
-            float dy = Y - particle.Y;
+            Bullet bullet = new Bullet();
+            bullet.X = Start_X;
+            bullet.Y = Start_Y;
+            float dx = X - bullet.X;
+            float dy = Y - bullet.Y;
 
             float length = MathF.Sqrt(dx * dx + dy * dy);
 
@@ -161,10 +159,10 @@ namespace Particle_system
                 dy /= length;
             }
 
-            particle.SpeedX = dx * speed;
-            particle.SpeedY = dy * speed;
+            bullet.SpeedX = dx * speed;
+            bullet.SpeedY = dy * speed;
 
-            particle.isOverlaps += (p, b) =>
+            bullet.isOverlaps += (p, b) =>
             {
                 p.Life = 0;
                 b.Life = 0;
@@ -176,7 +174,7 @@ namespace Particle_system
                     CreateBullete(X, Y, Start_X, Start_Y, SpeedBullets, false);
                 }
             };
-            particle.isLose += (b) =>
+            bullet.isLose += (b) =>
             {
                 b.Life = 0;
                 bullets.Remove(b);
@@ -184,12 +182,12 @@ namespace Particle_system
                     CreateBullete(X, Y, Start_X, Start_Y, SpeedBullets, false);
             };
 
-            bullets.Add(particle);
+            bullets.Add(bullet);
         }
 
         private void btnTower_Click(object sender, EventArgs e)
         {
-            if (Points >= 25 && towers.Count < 4)
+            if (Points >= 1 && towers.Count < 4)
             {
                 Tower tower = new Tower
                 {
@@ -198,7 +196,7 @@ namespace Particle_system
                 };
                 TowerX -= picDisplay.Width / 4;
                 towers.Add(tower);
-                Points -= 25;
+                Points -= 1;
                 points.Text = $"Счет: {Points}";
 
                 CreateBullete(tower.X, -picDisplay.Height, tower.X, tower.Y, SpeedBullets, false);
@@ -236,7 +234,7 @@ namespace Particle_system
                     SpeedBullets += 1f;
                 }
             }
-            if (SpeedBullets >= 10f)
+            if (SpeedBullets >= 15f)
             {
                 btnSpeed.Text = "Заполнено";
                 btnSpeed.Enabled = false;

@@ -77,12 +77,6 @@ namespace Particle_system
                 b.Dispose();
             }
         }
-        public Matrix GetTransform()
-        {
-            var matrix = new Matrix();
-            matrix.Translate(X, Y);
-            return matrix;
-        }
 
         public virtual bool Overlaps(Particle other)
         {

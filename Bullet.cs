@@ -33,5 +33,11 @@ namespace Particle_system
                 );
 
         }
+
+        public virtual void Update()
+        {
+            X += SpeedX;
+            Y += SpeedY;
+        }
     }
 }

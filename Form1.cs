@@ -1,5 +1,7 @@
+using System.Drawing;
 using System.Numerics;
 using static Particle_system.Particle;
+using static System.Windows.Forms.AxHost;
 
 namespace Particle_system
 {
@@ -14,13 +16,20 @@ namespace Particle_system
         List<Bullet> bullets = new List<Bullet>();
         List<Tower> towers = new List<Tower>();
 
+        int PriceDefense = 25;
+        int TowerDefense = 0;
+        private float nextAngle = 0f;
+        private float angleStep = 0.48f;
+
         public float SpeedBullets = 5f;
+
 
         public Form1()
         {
             InitializeComponent();
             picDisplay.Image = new Bitmap(picDisplay.Width, picDisplay.Height);
-            
+            points.Text = $"Счет: {Points}";
+            btnDefense.Text = $"Защита = {PriceDefense}";
             picDisplay.BackgroundImage = Image.FromFile("background.jpg");
             picDisplay.BackgroundImageLayout = ImageLayout.Stretch;
             TowerX = picDisplay.Width - picDisplay.Width / 8;
@@ -77,6 +86,7 @@ namespace Particle_system
                 btnTower.Enabled = false;
                 btnSpeed.Enabled = false;
                 btnHP.Enabled = false;
+                btnDefense.Enabled = false;
                 picDisplay.Invalidate();
                 picDisplay.Refresh();
                 return;
@@ -102,8 +112,7 @@ namespace Particle_system
                 foreach (var bullet in bullets.ToList())
                 {
                     bullet.Draw(g);
-                    bullet.X += bullet.SpeedX;
-                    bullet.Y += bullet.SpeedY;
+                    bullet.Update();
                     if (bullet.Y <= -picDisplay.Height)
                     {
                         bullet.isLose(bullet);
@@ -120,6 +129,7 @@ namespace Particle_system
 
             picDisplay.Invalidate();
         }
+
         private void picDisplay_MouseMove(object sender, MouseEventArgs e)
         {
             foreach (var emitter in emitters)
@@ -143,13 +153,13 @@ namespace Particle_system
 
 
 
-        private void CreateBullete(float X, float Y, float Start_X, float Start_Y, float speed, bool isMainTower)
+        private void CreateBullete(float endX, float endY, float startX, float startY, float speed, bool isMainTower)
         {
             Bullet bullet = new Bullet();
-            bullet.X = Start_X;
-            bullet.Y = Start_Y;
-            float dx = X - bullet.X;
-            float dy = Y - bullet.Y;
+            bullet.X = startX;
+            bullet.Y = startY;
+            float dx = endX - bullet.X;
+            float dy = endY - bullet.Y;
 
             float length = MathF.Sqrt(dx * dx + dy * dy);
 
@@ -166,20 +176,23 @@ namespace Particle_system
             {
                 p.Life = 0;
                 b.Life = 0;
+
                 bullets.Remove(b);
                 ++Points;
                 points.Text = $"Счет: {Points}";
+
                 if (!isMainTower)
                 {
-                    CreateBullete(X, Y, Start_X, Start_Y, SpeedBullets, false);
+                    CreateBullete(endX, endY, startX, startY, SpeedBullets, false);
                 }
+
             };
             bullet.isLose += (b) =>
             {
                 b.Life = 0;
                 bullets.Remove(b);
                 if (!isMainTower)
-                    CreateBullete(X, Y, Start_X, Start_Y, SpeedBullets, false);
+                    CreateBullete(endX, endY, startX, startY, SpeedBullets, false);
             };
 
             bullets.Add(bullet);
@@ -243,8 +256,96 @@ namespace Particle_system
 
         private void btnRestart_Click(object sender, EventArgs e)
         {
-            Application.Restart();
+            btnTower.Enabled = true;
+            btnSpeed.Enabled = false;
+            btnHP.Enabled = true;
+            btnDefense.Enabled = true;
+
+            PriceDefense = 25;
+            TowerDefense = 0;
+            nextAngle = 0f;
+            angleStep = 0.48f;
+
+            Points = 0;
+            isGameOver = false;
+            SpeedBullets = 5f;
+            towers.Clear();
+            bullets.Clear();
+            emitters.Clear();
+
+            btnDefense.Text = $"Защита = {PriceDefense}";
+            points.Text = $"Счет: {Points}";
+            btnTower.Text = "Башня = 25";
+            btnSpeed.Text = "Ускорение = 25";
+
+            picDisplay.BackgroundImage = Image.FromFile("background.jpg");
+            picDisplay.BackgroundImageLayout = ImageLayout.Stretch;
+            TowerX = picDisplay.Width - picDisplay.Width / 8;
+
+            player = new Player
+            {
+                X = picDisplay.Width / 2,
+                Y = picDisplay.Height - 100,
+            };
+
+            player.GameOver += (p) =>
+            {
+                isGameOver = true;
+
+            };
+
+            top = new TopEmitter
+            {
+                Width = picDisplay.Width,
+                Height = picDisplay.Height,
+                GravitationY = 0.25f
+            };
+
+            emitters.Add(this.top);
+            top.impactPoints.Add(player);
+            timer1.Start();
         }
 
+        private void btnDefense_Click(object sender, EventArgs e)
+        {
+            if (Points >= PriceDefense && TowerDefense < 13)
+            {
+                var LastDefense = bullets.FindLast(b => b is TowerDefense);
+                if (LastDefense is TowerDefense d)
+                {
+                    nextAngle = d.Angle+ angleStep;
+
+                }
+
+                Points -= PriceDefense;
+                points.Text = $"Счет: {Points}";
+                TowerDefense bullet = new TowerDefense();
+
+                bullet.CenterX = player.X;
+                bullet.CenterY = player.Y;
+                bullet.MainRadius = 100;
+
+                bullet.Angle = nextAngle;
+                bullet.AngularSpeed = 0.07f;
+
+                bullet.isOverlaps += (p, b) =>
+                {
+                    p.Life = 0;
+                    ++Points;
+                    points.Text = $"Счет: {Points}";
+                };
+
+                PriceDefense += 10;
+                btnDefense.Text = $"Защита = {PriceDefense}";
+
+                TowerDefense++;
+                bullets.Add(bullet);
+                if (TowerDefense == 13)
+                {
+                    btnDefense.Text = "Заполнено";
+                    btnDefense.Enabled = false;
+                }
+            }
+        }
     }
 }

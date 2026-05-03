@@ -38,6 +38,7 @@
             btnSpeed = new Button();
             btnRestart = new Button();
             lblDirection = new Label();
+            btnDefense = new Button();
             ((System.ComponentModel.ISupportInitialize)picDisplay).BeginInit();
             ((System.ComponentModel.ISupportInitialize)tbDirection).BeginInit();
             SuspendLayout();
@@ -79,7 +80,7 @@
             // 
             // btnTower
             // 
-            btnTower.Location = new Point(254, 556);
+            btnTower.Location = new Point(197, 556);
             btnTower.Name = "btnTower";
             btnTower.Size = new Size(93, 23);
             btnTower.TabIndex = 6;
@@ -89,7 +90,7 @@
             // 
             // btnHP
             // 
-            btnHP.Location = new Point(353, 556);
+            btnHP.Location = new Point(296, 556);
             btnHP.Name = "btnHP";
             btnHP.Size = new Size(89, 23);
             btnHP.TabIndex = 7;
@@ -100,17 +101,17 @@
             // btnSpeed
             // 
             btnSpeed.Enabled = false;
-            btnSpeed.Location = new Point(448, 556);
+            btnSpeed.Location = new Point(391, 556);
             btnSpeed.Name = "btnSpeed";
-            btnSpeed.Size = new Size(115, 23);
+            btnSpeed.Size = new Size(114, 23);
             btnSpeed.TabIndex = 8;
-            btnSpeed.Text = "Ускорение +1 (25)";
+            btnSpeed.Text = "Ускорение = 25";
             btnSpeed.UseVisualStyleBackColor = true;
             btnSpeed.Click += btnSpeed_Click;
             // 
             // btnRestart
             // 
-            btnRestart.Location = new Point(569, 556);
+            btnRestart.Location = new Point(618, 556);
             btnRestart.Name = "btnRestart";
             btnRestart.Size = new Size(75, 23);
             btnRestart.TabIndex = 9;
@@ -127,11 +128,22 @@
             lblDirection.TabIndex = 2;
             lblDirection.Text = "10";
             // 
+            // btnDefense
+            // 
+            btnDefense.Location = new Point(511, 556);
+            btnDefense.Name = "btnDefense";
+            btnDefense.Size = new Size(101, 23);
+            btnDefense.TabIndex = 10;
+            btnDefense.Text = "Защита = 50";
+            btnDefense.UseVisualStyleBackColor = true;
+            btnDefense.Click += btnDefense_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(834, 597);
+            Controls.Add(btnDefense);
             Controls.Add(btnRestart);
             Controls.Add(btnSpeed);
             Controls.Add(btnHP);
@@ -159,5 +171,6 @@
         private Button btnSpeed;
         private Button btnRestart;
         private Label lblDirection;
+        private Button btnDefense;
     }
 }

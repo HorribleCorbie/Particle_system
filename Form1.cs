@@ -203,7 +203,7 @@ namespace Particle_system
             bullet.isOverlaps += (p, b) =>
             {
                 p.Life--;
-                b.Life--;
+                b.Life=0;
 
                 bullets.Remove(b);
                 ++Points;
@@ -228,7 +228,7 @@ namespace Particle_system
 
         private void btnTower_Click(object sender, EventArgs e)
         {
-            if (Points >= 1 && towers.Count < 4)
+            if (Points >= 25 && towers.Count < 4)
             {
                 Tower tower = new Tower
                 {
@@ -237,7 +237,7 @@ namespace Particle_system
                 };
                 TowerX -= picDisplay.Width / 4;
                 towers.Add(tower);
-                Points -= 1;
+                Points -= 25;
                 points.Text = $"—чет: {Points}";
 
                 CreateBullete(tower.X, -picDisplay.Height, tower.X, tower.Y, SpeedBullets, false);
